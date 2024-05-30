@@ -7,7 +7,6 @@ EnvironmentFile=/etc/container-environment
 ExecStart=/usr/bin/kube-proxy \
 	--master=https://${KUBE_APISERVER}:6443 \
 	--cluster-cidr=${KUBE_POD_SUBNET} \
-	--logtostderr=true \
 	--hostname-override=${KUBE_NODE_NAME} \
 	--conntrack-tcp-timeout-established=0 \
 	--kubeconfig=/etc/kubernetes/proxy.kubeconfig \

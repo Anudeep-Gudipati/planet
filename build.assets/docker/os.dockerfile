@@ -2,11 +2,23 @@
 # It is basically Debian with latest packages and properly configured locales
 #
 # debian:stretch-backports tagged 20200501
-FROM quay.io/gravitational/debian-mirror@sha256:4b6ec644c29e4964a6f74543a5bf8c12bed6dec3d479e039936e4a37a8af9116
+FROM debian:stretch
 
 ENV DEBIAN_FRONTEND noninteractive
 
 ADD os-rootfs/ /
+
+
+RUN cp /etc/apt/sources.list /etc/apt/sources.old.list
+
+RUN echo "deb [trusted=yes] http://archive.debian.org/debian-archive/debian stretch main" > /etc/apt/sources.list
+
+RUN echo "deb [trusted=yes] http://archive.debian.org/debian-archive/debian-security stretch/updates main" >> /etc/apt/sources.list
+
+RUN echo "deb [trusted=yes] http://archive.debian.org/debian-archive/debian stretch-backports main" >> /etc/apt/sources.list
+
+RUN cat /etc/apt/sources.list
+
 
 RUN set -ex; \
 	if ! command -v gpg > /dev/null; then \

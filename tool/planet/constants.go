@@ -363,6 +363,8 @@ const (
 	APIServerServiceName = "kube-apiserver.service"
 	// ProxyServiceName is the name of the k8s proxy systemd service
 	ProxyServiceName = "kube-proxy.service"
+	// CRIDockerServiceName is the name of the cri-docker systemd service
+	CRIDockerServiceName = "cri-docker.service"
 	// KubeletServiceName is the name of the k8s kubelet systemd service
 	KubeletServiceName = "kube-kubelet.service"
 	// PlanetAgentServiceName is the name of the planet agent
@@ -598,7 +600,8 @@ var KubeletConfigOverrides = kubeletconfig.KubeletConfiguration{
 		"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
 		"TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
 		"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
-		"TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384",
+		"TLS_RSA_WITH_AES_128_GCM_SHA256",
+		"TLS_RSA_WITH_AES_256_GCM_SHA384",
 		"TLS_RSA_WITH_AES_128_GCM_SHA256",
 		"TLS_RSA_WITH_AES_256_GCM_SHA384",
 	},

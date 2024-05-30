@@ -10,12 +10,12 @@ ARG PLANET_GID
 # as the package has a dependency on the older version as the one available.
 RUN export DEBIAN_FRONTEND=noninteractive && set -ex && \
         apt-get update && \
-        apt-get install -q -y --allow-downgrades --no-install-recommends \
+        apt-get install -q -y --no-install-recommends \
         bridge-utils \
-        seccomp=$SECCOMP_VER \
+        seccomp \
         bash-completion \
         kmod \
-        libip4tc0=1.6.0+snapshot20161117-6 \
+        libip4tc0 \
         ebtables \
         libsqlite3-0 \
         e2fsprogs \
@@ -53,14 +53,14 @@ RUN export DEBIAN_FRONTEND=noninteractive && set -ex && \
         strace \
         netbase \
         bsdmainutils \
-        && apt-get -y autoclean && apt-get -y clean && apt-get autoremove \
+        && apt-get -y autoclean && apt-get -y clean && apt-get -y autoremove \
         && rm -rf /var/lib/apt/lists/*;
 
 # We need to use a newer version of iptables than debian has available
 # not ideal, but it's easier to run `make install` if we run this inline instead of a multi-stage build
 RUN export DEBIAN_FRONTEND=noninteractive && set -ex \
         && apt-get update \
-        && apt-get install -q -y --allow-downgrades --no-install-recommends \
+        && apt-get install -q -y --no-install-recommends \
         git \
         autoconf \
         libtool \

@@ -18,11 +18,11 @@ ExecStart=/usr/bin/kube-apiserver \
         --service-account-lookup=true \
         --service-account-signing-key-file=/var/state/apiserver.key \
         --service-account-issuer=api \
-        --enable-admission-plugins=PodSecurityPolicy,NodeRestriction,AlwaysPullImages,EventRateLimit \
+        --enable-admission-plugins=NodeRestriction,AlwaysPullImages,EventRateLimit \
         --enable-admission-plugins=${KUBE_ADMISSION_PLUGINS} \
         --admission-control-config-file=/etc/kubernetes/admission-control/control-config.yaml \
         --authorization-mode=Node,RBAC \
-        --runtime-config=api/v1,extensions/v1beta1,rbac.authorization.k8s.io/v1beta1,extensions/v1beta1/podsecuritypolicy,apps/v1beta1=true,apps/v1beta2=true,extensions/v1beta1/daemonsets=true,extensions/v1beta1/deployments=true,extensions/v1beta1/replicasets=true,extensions/v1beta1/networkpolicies=true,extensions/v1beta1/podsecuritypolicies=true,flowcontrol.apiserver.k8s.io/v1alpha1=true,storage.k8s.io/v1alpha1 \
+        --runtime-config=api/all=true \
         --allow-privileged=${PLANET_ALLOW_PRIVILEGED} \
         --tls-cert-file=/var/state/apiserver.cert \
         --tls-private-key-file=/var/state/apiserver.key \
@@ -48,7 +48,6 @@ ExecStart=/usr/bin/kube-apiserver \
         --event-ttl=24h0m0s \
         --bind-address=${PLANET_PUBLIC_IP} \
         --advertise-address=${PLANET_PUBLIC_IP} \
-        --logtostderr=true \
         --client-ca-file=/var/state/root.cert \
         --anonymous-auth=false \
         --profiling=false \

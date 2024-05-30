@@ -64,6 +64,7 @@ $(GOCACHE):
 planet-image:
 	cp $(ASSETDIR)/planet $(ROOTFS)/usr/bin/
 	cp $(ASSETDIR)/docker-import $(ROOTFS)/usr/bin/
+	cp ~/temp/cri-dockerd_0.3.7.3-0.debian-buster_amd64.deb $(ROOTFS)/home/ag/
 	cp $(ASSETS)/docker/os-rootfs/etc/planet/orbit.manifest.json $(TARGETDIR)/
 	sed -i "s/REPLACE_ETCD_LATEST_VERSION/$(ETCD_LATEST_VER)/g" $(TARGETDIR)/orbit.manifest.json
 	sed -i "s/REPLACE_KUBE_LATEST_VERSION/$(KUBE_VER)/g" $(TARGETDIR)/orbit.manifest.json

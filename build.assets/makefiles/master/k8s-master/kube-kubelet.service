@@ -9,21 +9,15 @@ EnvironmentFile=/run/dns.env
 EnvironmentFile=-/run/kubernetes-reserved.env
 ExecStartPre=/bin/systemctl is-active docker.service
 ExecStartPre=/usr/bin/scripts/cluster-dns.sh
+ExecStartPre=/usr/bin/scripts/cri-docker.sh
 ExecStart=/usr/bin/kubelet \
         --root-dir=/var/lib/kubelet \
         --hostname-override=${KUBE_NODE_NAME} \
-        --logtostderr=true \
-        --pod-infra-container-image=${KUBE_APISERVER}:5000/gcr.io/google_containers/pause:3.2 \
         --kubeconfig=/etc/kubernetes/kubelet.kubeconfig \
-        --register-with-taints=${PLANET_NODE_TAINTS} \
         --node-labels=${PLANET_NODE_LABELS} \
-        --network-plugin=cni \
-        --kube-reserved=${KUBE_RESERVED} \
-        --system-reserved=${KUBE_SYSTEM_RESERVED} \
-        --cgroup-root=${KUBE_CGROUP_ROOT} \
         --config=/etc/kubernetes/kubelet.yaml \
-        --image-pull-progress-deadline=15m \
-        --tls-min-version=VersionTLS12 \
+        --container-runtime=remote \
+        --container-runtime-endpoint=unix:///run/cri-dockerd.sock \
         $KUBE_KUBELET_FLAGS \
         $KUBE_CLOUD_FLAGS \
         $KUBE_COMPONENT_FLAGS

@@ -25,3 +25,4 @@ scripts:
 # install script to update clusterDNS values in kubelet config.
 	mkdir -p $(ROOTFS)/usr/bin/scripts
 	install -m 0755 ./cluster-dns.sh $(ROOTFS)/usr/bin/scripts/cluster-dns.sh
+	install -m 0755 ./cri-docker.sh $(ROOTFS)/usr/bin/scripts/cri-docker.sh

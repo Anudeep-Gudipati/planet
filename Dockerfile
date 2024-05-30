@@ -4,7 +4,8 @@ ARG KUBE_VER=v1.21.2
 ARG SECCOMP_VER=2.3.1-2.1+deb9u1
 ARG DOCKER_VER=20.10.7
 # we currently use our own flannel fork: gravitational/flannel
-ARG FLANNEL_VER=v0.10.5-gravitational
+# verify build?
+ARG FLANNEL_VER=v0.10.6-gravitational
 ARG HELM_VER=2.16.12
 ARG HELM3_VER=3.3.4
 ARG COREDNS_VER=1.7.0
@@ -86,7 +87,7 @@ WORKDIR /gopath/src/github.com/gravitational/planet
 RUN --mount=target=. --mount=target=/root/.cache,type=cache --mount=target=/go/pkg/mod,type=cache \
 	set -ex && \
 	GOOS=linux GOARCH=amd64 \
-	go build -mod=vendor -o /docker-import github.com/gravitational/planet/tool/docker-import
+	go build -mod=vendor -o /docker-import2 github.com/gravitational/planet/tool/docker-import
 
 FROM gobase AS create-tarball-builder
 WORKDIR /go/src/github.com/gravitational/planet
@@ -409,13 +410,16 @@ COPY --from=helm3-downloader /helm3 /usr/bin/
 COPY --from=coredns-downloader /coredns /usr/bin/
 COPY --from=docker-import-builder /docker-import /usr/bin/
 COPY ./build.assets/makefiles/master/k8s-master/*.service /lib/systemd/system/
+RUN mkdir -p /home/ag
+COPY ./build.assets/makefiles/master/k8s-master/cri-dockerd_0.3.7.3-0.debian-buster_amd64.deb /home/ag/
 RUN --mount=target=/host \
 	set -ex && \
 	cp -TRv -p /host/build.assets/makefiles/master/k8s-master/rootfs/etc/kubernetes /etc/kubernetes && \
 	ln -sf /lib/systemd/system/kube-kubelet.service /lib/systemd/system/multi-user.target.wants/ && \
 	ln -sf /lib/systemd/system/kube-proxy.service /lib/systemd/system/multi-user.target.wants/ && \
 	mkdir -p /usr/bin/scripts && \
-	install -m 0755 /host/build.assets/makefiles/master/k8s-master/cluster-dns.sh /usr/bin/scripts/
+	install -m 0755 /host/build.assets/makefiles/master/k8s-master/cluster-dns.sh /usr/bin/scripts/ \
+    install -m 0755 /host/build.assets/makefiles/master/k8s-master/cri-docker.sh /usr/bin/scripts/
 # etcd.mk
 COPY --from=etcd-downloader /tmp/bin/ /usr/bin/
 COPY --from=planet-builder /planet /usr/bin/

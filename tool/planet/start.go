@@ -589,6 +589,39 @@ func addKubeletOptions(config *Config) error {
 	if err != nil {
 		return trace.Wrap(err)
 	}
+
+	var genericObject map[string]interface{}
+	err = yaml.Unmarshal(configBytes, &genericObject)
+	if err != nil {
+		return err
+	}
+
+	// Add your new configurations here:
+	genericObject["podInfraContainerImage"] = "leader.telekube.local:5000/gcr.io/google_containers/pause:3.2"
+	genericObject["registerNode"] = true
+	genericObject["networkPlugin"] = "cni"
+	genericObject["kubeReserved"] = map[string]string{
+		"cpu":               "100m",
+		"memory":            "1Gi",
+		"ephemeral-storage": "1Gi",
+	}
+	genericObject["systemReserved"] = map[string]string{
+		"cpu":               "100m",
+		"memory":            "1Gi",
+		"ephemeral-storage": "1Gi",
+	}
+	genericObject["featureGates"] = map[string]bool{
+		"AllAlpha":               true,
+		"APIResponseCompression": false,
+		"StorageVersionAPI":      false,
+	}
+
+	// Marshal back to YAML
+	configBytes, err = yaml.Marshal(genericObject)
+	if err != nil {
+		return err
+	}
+
 	config.Files = append(config.Files, box.File{
 		Path:     constants.KubeletConfigFile,
 		Contents: bytes.NewReader(configBytes),
@@ -1150,6 +1183,7 @@ var masterUnits = []string{
 	"kube-controller-manager",
 	"kube-scheduler",
 	"kube-proxy",
+	"cri-docker",
 	"kube-kubelet",
 }
 
@@ -1157,6 +1191,7 @@ var nodeUnits = []string{
 	"flanneld",
 	"docker",
 	"kube-proxy",
+	"cri-docker",
 	"kube-kubelet",
 	"etcd",
 }
